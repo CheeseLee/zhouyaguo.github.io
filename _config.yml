@@ -1,0 +1,37 @@
+# Dependencies
+markdown:            redcarpet
+highlighter:         pygments
+
+# Permalinks
+#
+# Use of `relative_permalinks` ensures post links from the index work properly.
+permalink:           pretty
+relative_permalinks: true
+
+# Setup
+title:               Yaguo Zhou's Blog
+tagline:             ''
+description:         '不看代码的讨论都是扯淡'
+url:                 http://zhouyaguo.github.io
+baseurl:             /
+paginate:            7
+
+# About/contact
+author:
+  name:              周亚国
+  url:               https://twitter.com/zhouyaguo
+  email:             zhouyaguo@gmail.com
+
+# Custom vars
+version:             2.0
+
+# Social Media
+github:				http://github.com/zhouyaguo
+twitter:			http://twitter.com/zhouyaguo
+disqus:             zhouyaguo
+
+# Theme Author (Please don't edit this line cause of MIT LICENSE rules)
+theme:
+  creator:			Rizky Ariestiyansyah
+  codename:			Naringu
+  link:             https://github.com/ariestiyansyah/naringu
