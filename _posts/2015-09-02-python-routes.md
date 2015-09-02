@@ -215,6 +215,52 @@ curl -i http://172.17.140.73:8774/v1.1/596ef07ab9a34ed1bf5f88c1db4de7bc/flavors 
 
 ```
 
+nova extensions
+----------------
+
+nova中还有很多extensions，也提供Rest API，以keypairs为例：
+
+```
+class KeypairController(object):
+    """ Keypair API controller for the OpenStack API """
+
+    @wsgi.serializers(xml=KeypairTemplate)
+    def create(self, req, body):
+        ...
+
+    def delete(self, req, id):
+        ...
+
+    @wsgi.serializers(xml=KeypairsTemplate)
+    def index(self, req):
+        ...
+
+class Keypairs(extensions.ExtensionDescriptor):
+    """Keypair Support"""
+
+    name = "Keypairs"
+    alias = "os-keypairs"
+    namespace = "http://docs.openstack.org/compute/ext/keypairs/api/v1.1"
+    updated = "2011-08-08T00:00:00+00:00"
+
+    def get_resources(self):
+        resources = []
+
+        res = extensions.ResourceExtension(
+                'os-keypairs',
+                KeypairController())
+
+        resources.append(res)
+        return resources
+```
+
+示例：
+
+```
+curl -i http://172.17.140.73:8774/v1.1/596ef07ab9a34ed1bf5f88c1db4de7bc/os-keypairs -X GET -H "X-Auth-Project-Id: tenant" -H "X-Auth-Token: a455de1d83964984842d80b64439099f"
+```
+
+
 Reference
 ==========
 
