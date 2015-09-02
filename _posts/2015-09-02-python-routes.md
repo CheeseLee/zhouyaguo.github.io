@@ -194,7 +194,7 @@ Nova的Rest API
 示例
 ----
 
-```
+```bash
 curl -i http://172.17.140.73:8774/v1.1/ -X GET -H "X-Auth-Project-Id: tenant" -H "X-Auth-Token: 2685100346d845c2b687373b7cedbd07"
 
 curl -i http://172.17.140.73:5000/v2.0/tokens -H "Content-Type: application/json" --data '{"auth": {"tenantName": "tenant", "passwordCredentials": {"username": "admin", "password": "admin"}}}'
@@ -218,48 +218,98 @@ curl -i http://172.17.140.73:8774/v1.1/596ef07ab9a34ed1bf5f88c1db4de7bc/flavors 
 nova extensions
 ----------------
 
-nova中还有很多extensions，也提供Rest API，以keypairs为例：
+nova中还有很多extensions，也提供Rest API
 
-```
-class KeypairController(object):
-    """ Keypair API controller for the OpenStack API """
+- keypairs （resource的扩展，即有独立的url component）
 
-    @wsgi.serializers(xml=KeypairTemplate)
-    def create(self, req, body):
-        ...
+	```python
+	class KeypairController(object):
+	    """ Keypair API controller for the OpenStack API """
 
-    def delete(self, req, id):
-        ...
+	    @wsgi.serializers(xml=KeypairTemplate)
+	    def create(self, req, body):
+	        ...
 
-    @wsgi.serializers(xml=KeypairsTemplate)
-    def index(self, req):
-        ...
+	    def delete(self, req, id):
+	        ...
 
-class Keypairs(extensions.ExtensionDescriptor):
-    """Keypair Support"""
+	    @wsgi.serializers(xml=KeypairsTemplate)
+	    def index(self, req):
+	        ...
 
-    name = "Keypairs"
-    alias = "os-keypairs"
-    namespace = "http://docs.openstack.org/compute/ext/keypairs/api/v1.1"
-    updated = "2011-08-08T00:00:00+00:00"
+	class Keypairs(extensions.ExtensionDescriptor):
+	    """Keypair Support"""
 
-    def get_resources(self):
-        resources = []
+	    name = "Keypairs"
+	    alias = "os-keypairs"
+	    namespace = "http://docs.openstack.org/compute/ext/keypairs/api/v1.1"
+	    updated = "2011-08-08T00:00:00+00:00"
 
-        res = extensions.ResourceExtension(
-                'os-keypairs',
-                KeypairController())
+	    def get_resources(self):
+	        resources = []
 
-        resources.append(res)
-        return resources
-```
+	        res = extensions.ResourceExtension(
+	                'os-keypairs',
+	                KeypairController())
 
-示例：
+	        resources.append(res)
+	        return resources
+	```
 
-```
-curl -i http://172.17.140.73:8774/v1.1/596ef07ab9a34ed1bf5f88c1db4de7bc/os-keypairs -X GET -H "X-Auth-Project-Id: tenant" -H "X-Auth-Token: a455de1d83964984842d80b64439099f"
-```
+	```bash
+	curl -i http://172.17.140.73:8774/v1.1/596ef07ab9a34ed1bf5f88c1db4de7bc/os-keypairs -X GET -H "X-Auth-Project-Id: tenant" -H "X-Auth-Token: a455de1d83964984842d80b64439099f"
+	```
 
+- server-start-stop (controller的扩展，即复用url，采用不同的action来扩展)
+
+	```python
+	class ServerStartStopActionController(wsgi.Controller):
+	    ...
+	    @wsgi.action('os-start')
+	    def _start_server(self, req, id, body):
+	        ...
+
+	    @wsgi.action('os-stop')
+	    def _stop_server(self, req, id, body):
+	        ...
+
+
+	class Server_start_stop(extensions.ExtensionDescriptor):
+	    """Start/Stop instance compute API support"""
+
+	    name = "ServerStartStop"
+	    alias = "os-server-start-stop"
+	    namespace = "http://docs.openstack.org/compute/ext/servers/api/v1.1"
+	    updated = "2012-01-23T00:00:00+00:00"
+
+	    def get_controller_extensions(self):
+	        controller = ServerStartStopActionController()
+	        extension = extensions.ControllerExtension(self, 'servers', controller)
+	        return [extension]
+	```
+
+	```bash
+	curl -i http://172.17.140.73:8774/v1.1/596ef07ab9a34ed1bf5f88c1db4de7bc/servers/da8a4222-3da6-44c2-98af-84903bc7c95c/action -X POST -H "X-Auth-Project-Id: tenant" -H "User-Agent: python-novaclient" -H "Content-Type: application/json" -H "Accept: application/json" -H "X-Auth-Token: 5348ac531ad240f3b1ae25b629a99692" --data '{"os-stop": null}'
+	```
+
+Routes Resource options
+------------------------
+
+- collection : Additional URLs to allow for the collection
+
+	```python
+	map.resource("message", "messages", collection={"rss": "GET"})
+	# "GET /message/rss"  =>  ``Messages.rss()``.
+	# Defines a named route "rss_messages".
+	```
+
+- member : Additional URLs to allow for a member
+
+	```python
+	map.resource('message', 'messages', member={'mark':'POST'})
+	# "POST /message/1/mark"  =>  ``Messages.mark(1)``
+	# also adds named route "mark_message"
+	```
 
 Reference
 ==========
