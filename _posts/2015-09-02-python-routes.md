@@ -86,15 +86,15 @@ class APIRouter(nova.api.openstack.APIRouter):
 
 map.resource("message", "messages")产生的规则表现为：
 
-	```
-	GET    /messages        => messages.index()    => url("messages")
-	POST   /messages        => messages.create()   => url("messages")
-	GET    /messages/new    => messages.new()      => url("new_message")
-	PUT    /messages/1      => messages.update(id) => url("message", id=1)
-	DELETE /messages/1      => messages.delete(id) => url("message", id=1)
-	GET    /messages/1      => messages.show(id)   => url("message", id=1)
-	GET    /messages/1/edit => messages.edit(id)   => url("edit_message", id=1)
-	```
+```
+GET    /messages        => messages.index()    => url("messages")
+POST   /messages        => messages.create()   => url("messages")
+GET    /messages/new    => messages.new()      => url("new_message")
+PUT    /messages/1      => messages.update(id) => url("message", id=1)
+DELETE /messages/1      => messages.delete(id) => url("message", id=1)
+GET    /messages/1      => messages.show(id)   => url("message", id=1)
+GET    /messages/1/edit => messages.edit(id)   => url("edit_message", id=1)
+```
 
 
 Nova的Rest API
