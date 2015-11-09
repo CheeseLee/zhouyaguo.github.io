@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Region和Availability Zone的概念"
+title: "[openstack] Region和Availability Zone的概念"
 comments: true
 categories:
 - openstack

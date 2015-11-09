@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "Compute Node资源使用情况"
+title: "[openstack] Compute Node资源使用情况"
 comments: true
 categories:
 - openstack
