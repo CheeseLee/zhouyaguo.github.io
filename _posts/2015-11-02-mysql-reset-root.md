@@ -13,4 +13,5 @@ centos7下重置mysql root密码:
 1. mysql -uroot -p ，然后直接回车
 1. use mysql;
 1. update user set password=PASSWORD('12345678') where user="root";
+1. FLUSH PRIVILEGES;
 1. quit
