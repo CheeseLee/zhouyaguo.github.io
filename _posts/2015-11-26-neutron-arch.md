@@ -9,24 +9,24 @@ categories:
 plugin体系
 ---------
 
-neutron设计了一个plugin体系，在`NeutronPluginBaseV2`中定义了plugin API，
+neutron设计了一个plugin体系，在`NeutronPluginBaseV2`类中定义了plugin的API，
 主要就是network，subnet，port三种资源的CIUD操作
 
 ```
-NeutronPluginBaseV2  --定义抽象方法
+NeutronPluginBaseV2  -->定义抽象方法
        ^
        |
-NeutronDbPluginV2  --负责network，subnet，port三种资源的表CIUD操作
+NeutronDbPluginV2  -->负责network，subnet，port三种资源的表CIUD操作
        ^
        |
-    Ml2Plugin      --在db操作之后，接着调用extension_manager、type_manager、mechanism_manager(precommit,postcommit)
+    Ml2Plugin      -->在db操作之后，接着调用extension_manager、type_manager、mechanism_manager
 ```
 
 ML2 plugin architecture
 ------------------------
-从Havana开始，openvswitch and linuxbridge plugins被Modular Layer 2 (ML2) plugin 取代
+从Havana版本开始，openvswitch和linuxbridge plugins被Modular Layer 2 (ML2) plugin 取代
 
-ML2用type drivers来支持多种网络技术，用 mechanism drivers来配置网络
+ML2用 *type drivers* 来支持多种网络技术，用 *mechanism drivers* 来配置网络
 
 长远的计划是将所有厂商相关的plugin都转换成type和mechanism drivers
 
@@ -34,29 +34,29 @@ ML2的处理过程
 -----------
 
 - create_network
-  - db操作create_network
-  - extension_manager.process_create_network
-  - type_manager.create_network_segments
-  - mechanism_manager.create_network_precommit
+  - db操作create\_network
+  - extension_manager.process\_create\_network
+  - type_manager.create\_network\_segments
+  - mechanism_manager.create\_network\_precommit
   - db commit
-  - mechanism_manager.create_network_postcommit
+  - mechanism_manager.create\_network\_postcommit
 - create_subnet
   - db操作create_subnet
-  - extension_manager.process_create_subnet
-  - mechanism_manager.create_subnet_precommit
+  - extension_manager.process\_create\_subnet
+  - mechanism_manager.create\_subnet\_precommit
   - db commit
-  - mechanism_manager.create_subnet_postcommit
+  - mechanism_manager.create\_subnet\_postcommit
 - create_port
   - db操作create_port
-  - extension_manager.process_create_port
+  - extension_manager.process\_create\_port
   - 处理port biding
-  - mechanism_manager.create_port_precommit
+  - mechanism_manager.create\_port\_precommit
   - db commit
-  - mechanism_manager.create_port_postcommit
+  - mechanism_manager.create\_port\_postcommit
 
 `其中只有create_network才用到type_manager`
 
-network type的种类
+network type种类
 -----------------
 
 neutron支持每个tenant拥有多个private networks，并且允许ip overlap，即允许多个tenant使用相同的private addresses
@@ -76,7 +76,7 @@ neutron支持每个tenant拥有多个private networks，并且允许ip overlap�
 mechanism种类
 -------------
 
-不同厂商提供公里不同的mechanism driver（位于`neutron/neutron/plugins/ml2/drivers/``）
+不同厂商提供不同的mechanism driver（源码位于`neutron/neutron/plugins/ml2/drivers/``）
 
 - brocade
 - freescale
@@ -95,7 +95,7 @@ mechanism种类
 extension种类
 ------------
 
-位于`neutron/neutron/extensions`，提供各种除了network，subnet，port之外的其他服务，具体例如：
+源码位于`neutron/neutron/extensions`，提供除了network，subnet，port之外的各种其他服务，例如：
 
 - dns
 - qos
@@ -108,33 +108,30 @@ extension种类
 - route
 - mtu
 
-plugin
---------
+动手写一个plugin
+---------------
 
-`NeutronPluginBaseV2.py`显示了一个plugin主要提供三种资源的抽象，即network、subnet、port。
-不同厂商负责编写各自的plugin实现（neutron提供了一个例子：NeutronDbPluginV2，是基于数据库的）
+步骤：
 
-自己实现一个plugin的步骤：
-
-- neutron.egg-info/entry_points.txt的[neutron.core_plugins]部分，要定义一下，例如：midonet = neutron.plugins.midonet.plugin:MidonetPluginV2
+- neutron.egg-info/entry\_points.txt的[neutron.core\_plugins]部分，要定义一下，例如：midonet = neutron.plugins.midonet.plugin:MidonetPluginV2
 - /etc/neutron.conf中设置core_plugin
 - neutron/plugins写具体的plugin厂商实现
 
 如果厂商除了network、subnet、port之外，还有一些额外的功能，比如router，firewall等，怎么办？就需要用到extension
 
 
-extension
------------
+动手写一个extension
+-------------------
 
-自己实现一个extension的步骤：
+步骤：
 
-1. 写一个RESOURCE_ATTRIBUTE_MAP，类似neutron/api/v2/attributes.py中的NETWORKS的写法
+1. 写一个RESOURCE\_ATTRIBUTE_MAP，类似neutron/api/v2/attributes.py中的NETWORKS的写法
 1. 写一个类，继承extensions.ExtensionDescriptor
-1. /etc/neutron/neutron.conf中配置api_extensions_path
-1. 在自己的plugin中写supported_extension_aliases = ['my-extensions']，以表明自己的plugin支持该扩展
+1. /etc/neutron/neutron.conf中配置api\_extensions\_path
+1. 在自己的plugin中写supported\_extension\_aliases = ['my-extensions']，以表明自己的plugin支持该扩展
 1. 如果该extension需要db的话，则参照NeutronDbPluginV2来写数据库操作
 1. 在neutronclient/shell.py中添加CLI命令参数
-1. 在neutronclient/neutron/v2_0/下新建自己的文件夹，新建5个类，分别实现List/Show/Create/Delete/Update，这些class负责将命令转化为API call，最后会被neutron后台的plugin controller处理
+1. 在neutronclient/neutron/v2\_0/下新建自己的文件夹，新建5个类，分别实现List/Show/Create/Delete/Update，这些class负责将命令转化为API call，最后会被neutron后台的plugin controller处理
 
 
 源码中的注释
