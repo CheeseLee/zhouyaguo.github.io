@@ -1,6 +1,6 @@
 ---
 layout: post
-title: "[openstack] 网络基础"
+title: "[openstack] [neutron] 网络基础"
 comments: true
 categories:
 - openstack
