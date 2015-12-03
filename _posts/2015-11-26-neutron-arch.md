@@ -73,8 +73,25 @@ neutron支持每个tenant拥有多个private networks，并且允许ip overlap�
   - gre和vxlan是用来为instances创建overlay networks，这种网络模式需要有一个router，networks内部的instance要经过router出去，外部可以通过floating ip来进入内部
 - geneve
 
-mechanism种类
--------------
+ml2 extension种类
+-----------------
+
+位于`neutron/neutron/extensions`，提供各种除了network，subnet，port之外的其他服务，具体例如：
+
+- dns
+- qos
+- rbac
+- SecurityGroup
+- metering
+- dvr
+- quotas
+- dhcp
+- route
+- mtu
+
+
+ml2 mechanism种类
+-----------------
 
 不同厂商提供不同的mechanism driver（源码位于`neutron/neutron/plugins/ml2/drivers/``）
 
@@ -91,25 +108,11 @@ mechanism种类
 - opendaylight
 - openvswitch
 - ovsvapp
+- IBM SDNVE
+- L2Population
 
-extension种类
-------------
-
-源码位于`neutron/neutron/extensions`，提供除了network，subnet，port之外的各种其他服务，例如：
-
-- dns
-- qos
-- rbac
-- SecurityGroup
-- metering
-- dvr
-- quotas
-- dhcp
-- route
-- mtu
-
-动手写一个plugin
----------------
+动手写plugin
+-----------
 
 步骤：
 
@@ -120,8 +123,8 @@ extension种类
 如果厂商除了network、subnet、port之外，还有一些额外的功能，比如router，firewall等，怎么办？就需要用到extension
 
 
-动手写一个extension
--------------------
+动手写extension
+---------------
 
 步骤：
 
