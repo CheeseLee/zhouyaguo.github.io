@@ -151,6 +151,7 @@ categories:
   ```
 
 - `ovs-ofctl dump-ports-desc br-int` 查看port对应的编号
+
   ```
   [root@centos7-openstack-L-test nova]# ovs-ofctl dump-ports-desc br-int
   OFPST_PORT_DESC reply (xid=0x2):
