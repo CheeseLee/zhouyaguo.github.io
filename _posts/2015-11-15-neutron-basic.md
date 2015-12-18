@@ -75,7 +75,7 @@ Virtual routing and forwarding (VRF)
 NAT
 ---
 
-NAT含义是Network Address Translation，就是修改ip报文的头部的source ip或者destination ip
+NAT含义是Network Address Translation，就是修改ip报文的头部的source ip或者destination ip，NAT通常都是router的行为。在openstack中，router的角色由iptables扮演。
 
 `SNAT`：修改源ip，用于private address访问外网的server
 
@@ -90,8 +90,9 @@ router会准确的转给后面的private address。这种同时修改port的SNAT
 
 `DNAT`：修改目的ip
 
-openstack中用DNAT将来自instance的报文路由到metadata service去。在instance中的应用通过HTTP GET方式访问169.254.169.254，这个ip不存在，
-openstack用DNAT将目录ip修改为metadata service的ip
+openstack中用DNAT将来自instance的报文路由到metadata service去。
+
+当instance中的应用通过HTTP GET方式访问169.254.169.254时，由于这个ip不存在，于是openstack用DNAT的方式将目标ip修改为metadata service的ip
 
 `One-to-one NAT`
 
