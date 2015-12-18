@@ -90,7 +90,7 @@ router会准确的转给后面的private address。这种同时修改port的SNAT
 
 `DNAT`：修改目的ip
 
-openstack中用DNAT将来自instance的报文路由到metadata service去。
+openstack中用DNAT将来自instance的报文路由到metadata service去。(比如ssh keys就要通过metadata service获取)
 
 当instance中的应用通过HTTP GET方式访问169.254.169.254时，由于这个ip不存在，于是openstack用DNAT的方式将目标ip修改为metadata service的ip
 
