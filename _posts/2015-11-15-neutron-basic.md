@@ -81,9 +81,9 @@ NAT含义是Network Address Translation，就是修改ip报文的头部的source
 
 RFC 1918保留了3个网段作为private addresses：
 
-- 10.0.0.0/8
-- 172.16.0.0/12
-- 192.168.0.0/16
+- 10.0.0.0/8 (即 10.0.0.0 - 10.255.255.255)
+- 172.16.0.0/12 (即 172.16.0.0 - 172.31.255.255)
+- 192.168.0.0/16 (即 192.168.0.0 - 192.168.255.255)
 
 openstack中，sender和receiver之间有个NAT router，router既修改ip，又修改port，同时会记录修改的对应关系，当外面发回报文时，
 router会准确的转给后面的private address。这种同时修改port的SNAT又称为Port Address Translation (PAT)，这种做法又称为`NAT overload`
