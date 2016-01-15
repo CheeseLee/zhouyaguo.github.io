@@ -1,22 +1,20 @@
 ---
 layout: post
-title: "[openstack] [neutron] Neutron架构"
+title: "[openstack] [neutron] Neutron plugin体系"
 comments: true
 categories:
 - openstack
 ---
 
-plugin体系
----------
 
 neutron设计了一个plugin体系，在`NeutronPluginBaseV2`类中定义了plugin的API，
-主要就是network，subnet，port三种资源的CIUD操作
+主要就是network，subnet，port三种资源的CRUD操作
 
 ```
 NeutronPluginBaseV2  -->定义抽象方法
        ^
        |
-NeutronDbPluginV2  -->负责network，subnet，port三种资源的表CIUD操作
+NeutronDbPluginV2  -->负责network，subnet，port三种资源的表CRUD操作
        ^
        |
     Ml2Plugin      -->在db操作之后，接着调用extension_manager、type_manager、mechanism_manager
@@ -93,7 +91,7 @@ ml2 extension种类
 ml2 mechanism种类
 -----------------
 
-不同厂商提供不同的mechanism driver（源码位于`neutron/neutron/plugins/ml2/drivers/``）
+不同厂商提供不同的mechanism driver（源码位于`neutron/neutron/plugins/ml2/drivers/`）
 
 - brocade
 - freescale
@@ -194,3 +192,25 @@ ml2 mechanism种类
   methods extend the resource dictionaries returned from the API
   operations with the values of the extended attributes.
   ```
+
+Qos plugin
+----------
+
+server端设计
+  - neutron.extensions.qos 定义api
+  - neutron.services.qos.qos\_plugin _实现qos extension，具体处理rule_
+  - neutron.services.qos.notification\_drivers.manager _负责把notifications传给notifications driver_
+  - neutron.services.qos.notification\_drivers.qos_base _接收event，并对create, update, delete操作做处理_
+  - neutron.services.qos.notification\_drivers.message_queue _通过rpc来update agent_
+  - neutron.core\_extensions.base _实现core resource (port/network) extensions的接口_
+  - neutron.core\_extensions.qos _qos的core resource extension_
+  - neutron.plugins.ml2.extensions.qos _是ml2 extension driver_
+agent端设计
+  - //TODO
+
+server端配置
+  - service_plugins加上qos
+  - [qos]中设置notification_drivers，默认是message_queue
+  - [ml2]中设置extension_drivers，加上qos
+agent端配置
+  - [agent]加qos
