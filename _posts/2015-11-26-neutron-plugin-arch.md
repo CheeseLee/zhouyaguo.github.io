@@ -197,6 +197,7 @@ Qos plugin
 ----------
 
 server端设计
+
   - neutron.extensions.qos 定义api
   - neutron.services.qos.qos\_plugin _实现qos extension，具体处理rule_
   - neutron.services.qos.notification\_drivers.manager _负责把notifications传给notifications driver_
@@ -205,12 +206,17 @@ server端设计
   - neutron.core\_extensions.base _实现core resource (port/network) extensions的接口_
   - neutron.core\_extensions.qos _qos的core resource extension_
   - neutron.plugins.ml2.extensions.qos _是ml2 extension driver_
+
 agent端设计
+
   - //TODO
 
 server端配置
+
   - service_plugins加上qos
   - [qos]中设置notification_drivers，默认是message_queue
   - [ml2]中设置extension_drivers，加上qos
+
 agent端配置
+
   - [agent]加qos
