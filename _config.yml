@@ -14,7 +14,7 @@ tagline:             ''
 description:         '不看代码的讨论都是扯淡'
 url:                 http://zhouyaguo.github.io
 baseurl:             /
-paginate:            7
+paginate:            10
 
 # About/contact
 author:
