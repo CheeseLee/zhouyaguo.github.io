@@ -169,34 +169,33 @@ facter送过来的信息可以作为变量进行处理的，node牵涉到的代�
     }
     ```  
 
-例子： puppet cilent在本地执行manifest
+例子： puppet client在本地执行manifest
 ------------------------------
 
-文件管理
+- 文件管理
 
-1. 写一个manifest： test.pp
+    1. 写一个manifest： test.pp
 
-  ```
-  file {
-    "/tmp/haha":
-    content => "haha"
-  }
+        ```
+        file {
+            "/tmp/haha":
+            content => "haha"
+        }
+        ```
 
-  ```
+    1. 执行 `puppet apply test.pp`
+    1. 在/tmp目录下会发现新文件
 
-1. 执行 `puppet apply test.pp`
-1. 在/tmp目录下会发现新文件
+- 包管理
 
-包管理
+    1. 写一个manifest： test.pp
 
-1. 写一个manifest： test.pp
+        ```
+        package {
+            ["gcc", "make", "nginx", "haproxy"]:
+            ensure => installed
+        }
+        ```
 
-  ```
-  package {
-    ["gcc", "make", "nginx", "haproxy"]:
-      ensure => installed
-  }
-  ```
-
-1. 执行 `sudo puppet apply test.pp`
-1. 上述4个包会被自动安装
+    1. 执行 `sudo puppet apply test.pp`
+    1. 上述4个包会被自动安装
